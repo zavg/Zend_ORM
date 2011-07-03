@@ -42,19 +42,19 @@ sub mapper
 		s/{Id}/$Id/g;
 		if(/{data}/)
 		{
-			print MAPPER_OUT "\t\$data = array(\n";
+			print MAPPER_OUT "        \$data = array(\n";
 			foreach $var (@vars)
 			{
 				$Var = ucfirst $var;
-				print MAPPER_OUT "\t\t\'$var\' => \$$name->get$Var(),\n"
+				print MAPPER_OUT "            \'$var\' => \$$name->get$Var(),\n"
 			}
-			print MAPPER_OUT "\t\);\n";
+			print MAPPER_OUT "        \);\n";
 			next;
 		}
 		if(/{(\w+)_set}/)
 		{
-			if(/{name_set}/)  { print MAPPER_OUT "\t\$$name"; }
-		        if(/{entry_set}/) { print MAPPER_OUT "\t\$entry"; }
+			if(/{name_set}/)  { print MAPPER_OUT "        \$$name"; }
+		        if(/{entry_set}/) { print MAPPER_OUT "        \$entry"; }
 			$bFirstVariable = 1;
 			foreach $var (@vars)
 			{
@@ -66,7 +66,7 @@ sub mapper
 				}
 				else
 				{
-					print MAPPER_OUT "\n\t\t->set$Var\(\$row->$var\)";
+					print MAPPER_OUT "\n            ->set$Var\(\$row->$var\)";
 				}
 			}
 			print MAPPER_OUT ";\n";
@@ -98,32 +98,45 @@ sub model
 	{
 		s/{name}/$name/;
 		s/{Name}/$Name/;
-		s/{vars}/@php_vars/;
-		s/{common}/@common/;
+		if(/{vars}/)
+		{			
+			foreach (@php_vars) {
+				print MODEL_OUT;
+			}
+			next;
+		}       			
+		if(/{common}/)
+		{			
+			foreach (@common) {
+				print MODEL_OUT;
+			}
+			next;
+		}       			
+
 		if(/{set_get}/)
 		{
-		foreach $var (@vars)
-		{
-			$Var = ucfirst $var;
-			$var = lcfirst $var;
-			open (SETTER_TPL, "<templates/setter.tpl") || die("Setter template file does not found");
-			while(<SETTER_TPL>)
+			foreach $var (@vars)
 			{
-                        	s/{Var}/$Var/g;
-				s/{var}/$var/g;
-				print MODEL_OUT;
-			}
-			close SETTER_TPL;
+				$Var = ucfirst $var;
+				$var = lcfirst $var;
+				open (SETTER_TPL, "<templates/setter.tpl") || die("Setter template file does not found");
+				while(<SETTER_TPL>)
+				{
+                	        	s/{Var}/$Var/g;
+					s/{var}/$var/g;
+					print MODEL_OUT;
+				}
+				close SETTER_TPL;
 
-			open (GETTER_TPL, "<templates/getter.tpl") || die("Getter template file does not found");
-			while(<GETTER_TPL>)
-			{
-				s/{Var}/$Var/g;
-				s/{var}/$var/g;
-				print MODEL_OUT;
+				open (GETTER_TPL, "<templates/getter.tpl") || die("Getter template file does not found");
+				while(<GETTER_TPL>)
+				{
+					s/{Var}/$Var/g;
+					s/{var}/$var/g;
+					print MODEL_OUT;
+				}
+				close GETTER_TPL;
 			}
-			close GETTER_TPL;
-		}
 		}
 		else
 		{
@@ -174,7 +187,7 @@ while(<IN>)
 			# Reading table fields
 			if($str =~ /(?<=  `)(\w+)/)
 			{
-				push @php_vars, "\tprotected \$_".(lcfirst $+).";\n";
+				push @php_vars, "    protected \$_".(lcfirst $+).";\n";
 				push @vars, $+;
 			}
 			# Reading primary key
@@ -182,7 +195,7 @@ while(<IN>)
 			{
 				$id = $+;
 			}			
-		}
+		}		
 		dbtable $name;
 		mapper $name;
 		model $name;

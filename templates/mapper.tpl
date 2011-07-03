@@ -38,32 +38,32 @@ class General_Model_{Name}Mapper extend General_Model_ParentMapper
     
     public function setFields(General_Model_{Name} $entry, $row)
     {
-	{entry_set}
+        {entry_set}
     }    	
 
  
     public function find(${id})
     {
-	${name} = new General_Model_{Name}();
+        ${name} = new General_Model_{Name}();
         $result = $this->getDbTable()->find(${id});
         if (0 == count($result)) {
             return;
         }
         $row = $result->current();
-	self::setFields(${name}, $row);
-	return ${name};
+        self::setFields(${name}, $row);
+        return ${name};
     }
 
     public function findWhere($where_stmt)
     {                            	
-	$query = $this->getDbTable()->select();
-	$query->where($where_stmt);
-	$resultSet = $this->getDbTable()->fetchAll($query);
+        $query = $this->getDbTable()->select();
+        $query->where($where_stmt);
+        $resultSet = $this->getDbTable()->fetchAll($query);
         $entries   = array();
         foreach ($resultSet as $row) {
-        	$entry = new General_Model_{Name}();
-		self::setFields($entry, $row);
-		$entries[] = $entry;
+            $entry = new General_Model_{Name}();
+            self::setFields($entry, $row);
+            $entries[] = $entry;
         }
         return $entries;
     }
@@ -73,9 +73,9 @@ class General_Model_{Name}Mapper extend General_Model_ParentMapper
         $resultSet = $this->getDbTable()->fetchAll();
         $entries   = array();
         foreach ($resultSet as $row) {
-        	$entry = new General_Model_{Name}();
-		self::setFields($entry, $row);
-		$entries[] = $entry;
+            $entry = new General_Model_{Name}();
+            self::setFields($entry, $row);
+            $entries[] = $entry;
         }
         return $entries;
     }
