@@ -19,12 +19,12 @@ class General_Model_{Name}Mapper extend General_Model_ParentMapper
     public function getDbTable()
     {
         if (null === $this->_dbTable) {
-            $this->setDbTable('Application_Model_DBTable_{Name}');
+            $this->setDbTable('General_Model_DBTable_{Name}');
         }
         return $this->_dbTable;
     }
  
-    public function save(Application_Model_{Name} ${name})
+    public function save(General_Model_{Name} ${name})
     {
         {data}
  
@@ -36,7 +36,7 @@ class General_Model_{Name}Mapper extend General_Model_ParentMapper
         }
     }
     
-    public function setFields(Application_Model_{Name} $entry, $row)
+    public function setFields(General_Model_{Name} $entry, $row)
     {
 	{entry_set}
     }    	
@@ -44,7 +44,7 @@ class General_Model_{Name}Mapper extend General_Model_ParentMapper
  
     public function find(${id})
     {
-	${name} = new Application_Model_{Name}();
+	${name} = new General_Model_{Name}();
         $result = $this->getDbTable()->find(${id});
         if (0 == count($result)) {
             return;
@@ -61,7 +61,7 @@ class General_Model_{Name}Mapper extend General_Model_ParentMapper
 	$resultSet = $this->getDbTable()->fetchAll($query);
         $entries   = array();
         foreach ($resultSet as $row) {
-        	$entry = new Application_Model_{Name}();
+        	$entry = new General_Model_{Name}();
 		self::setFields($entry, $row);
 		$entries[] = $entry;
         }
@@ -73,10 +73,18 @@ class General_Model_{Name}Mapper extend General_Model_ParentMapper
         $resultSet = $this->getDbTable()->fetchAll();
         $entries   = array();
         foreach ($resultSet as $row) {
-        	$entry = new Application_Model_{Name}();
+        	$entry = new General_Model_{Name}();
 		self::setFields($entry, $row);
 		$entries[] = $entry;
         }
         return $entries;
+    }
+
+    public function deleteObject($id) 
+    {
+        $table = $this->getDbTable();
+        $where = $table->getAdapter()->quoteInto(
+            'id{Name} = ?', $id);
+        $table->delete($where);
     }
 }
