@@ -1,6 +1,6 @@
 <?php 
 
-class General_Model_{Name}Mapper extend General_Model_ParentMapper
+class General_Model_{Name}Mapper extends General_Model_ParentMapper
 {
     protected $_dbTable;
  
